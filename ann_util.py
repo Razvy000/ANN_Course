@@ -1,4 +1,9 @@
+import math
 import random
+
+
+def sigmoid(x):
+    return 1.0 / (1 + math.exp(-x))
 
 
 def between(min, max):
