@@ -1,7 +1,5 @@
-from ann_util import between
-from ann_util import deriv_sigmoid
-from ann_util import make_matrix
-from ann_util import sigmoid
+from ann_util import between, make_matrix
+from ann_util import deriv_sigmoid, sigmoid
 
 
 use_bias = 1
@@ -27,14 +25,20 @@ class ANN:
         """
         for epoch in range(0, n_epochs):
 
+            epoch_error = 0
             for i in range(0, len(inputs)):
 
                 self.set_input(inputs[i])
                 self.forward_propagate()
 
-                self.update_error_output(targets[i])
+                sample_error = self.update_error_output(targets[i])
+                epoch_error += sample_error
+
                 self.backward_propagate()
                 self.update_weights()
+
+            if epoch % 100 == 0:
+                print(epoch, epoch_error)
 
     def predict(self, input):
         """
@@ -90,11 +94,15 @@ class ANN:
         return res
 
     def update_error_output(self, target_vector):
+        sample_error = 0
         output_layer = self.layers[-1]
         for i in range(0, output_layer.n_neurons):
             neuron_output = output_layer.output[i + use_bias]
             neuron_error = target_vector[i] - neuron_output
             output_layer.error[i] = deriv_squash(output_layer.input[i]) * neuron_error
+            sample_error += neuron_error * neuron_error
+        sample_error *= 0.5
+        return sample_error
 
     def backward_propagate(self):
         """
@@ -132,22 +140,17 @@ class Layer:
         self.weight = make_matrix(prev_layer_size + use_bias, self.n_neurons)
         for i in range(len(self.weight)):
             for j in range(len(self.weight[i])):
-                self.weight[i][j] = between(-0.2, 0.2)
+                self.weight[i][j] = between(-1.0, 1.0)
 
 if __name__ == '__main__':
 
-    # the AND function
-    and_ann = ANN([2, 1])
+    # a logical function
+    logic_ann = ANN([2, 2, 1])
     inputs = [[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]]
-    targets = [[0.0], [0.0], [0.0], [1.0]]
-
-    # make predictions with no training
-    print("Prediction without any training")
-    for i in range(len(targets)):
-        print(inputs[i], and_ann.predict(inputs[i]))
+    targets = [[0.0], [1.0], [1.0], [0.0]]
 
     # train and predict
-    and_ann.train(inputs, targets, 20000)
+    logic_ann.train(inputs, targets, 20000)
     print("Predictions after training")
     for i in range(len(targets)):
-        print(inputs[i], and_ann.predict(inputs[i]))
+        print(inputs[i], logic_ann.predict(inputs[i]))
