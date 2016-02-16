@@ -11,6 +11,15 @@ def deriv_sigmoid(x):
     return (1 - sgmd) * sgmd
 
 
+def hyperbolic_tangent(x):
+    return math.tanh(x)
+
+
+def deriv_hyperbolic_tangent(x):
+    th = math.tanh(x)
+    return 1 - th * th
+
+
 def between(min, max):
     """
     Return a real random value between min and max.

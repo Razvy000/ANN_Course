@@ -1,10 +1,10 @@
 from ann_util import between, make_matrix
-from ann_util import deriv_sigmoid, sigmoid
-
+# from ann_util import deriv_sigmoid, sigmoid
+from ann_util import deriv_hyperbolic_tangent, hyperbolic_tangent
 
 use_bias = 1
-squash = sigmoid
-deriv_squash = deriv_sigmoid
+squash = hyperbolic_tangent  # sigmoid
+deriv_squash = deriv_hyperbolic_tangent  # deriv_sigmoid
 
 
 class ANN:
