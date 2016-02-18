@@ -1,17 +1,28 @@
 from ann_util import between, make_matrix
-# from ann_util import deriv_sigmoid, sigmoid
+from ann_util import deriv_logistic, logistic
 from ann_util import deriv_hyperbolic_tangent, hyperbolic_tangent
 
 use_bias = 1
-squash = hyperbolic_tangent  # sigmoid
-deriv_squash = deriv_hyperbolic_tangent  # deriv_sigmoid
 
 
 class ANN:
 
-    def __init__(self, layer_sizes):
+    def __init__(self, layer_sizes, activation_fun='tanh'):
+        """
+        Initialize the network.
+        :param activation_fun: tanh or logistic
+        """
         self.layers = []
         self.learn_rate = 0.1
+
+        self.squash = None
+        self.deriv_squash = None
+        if activation_fun == 'tanh':
+            self.squash = hyperbolic_tangent
+            self.deriv_squash = deriv_hyperbolic_tangent
+        elif activation_fun == 'logistic':
+            self.squash = logistic
+            self.deriv_squash = deriv_logistic
 
         for l in range(len(layer_sizes)):
             layer_size = layer_sizes[l]
@@ -83,7 +94,7 @@ class ANN:
                     sum_in += dst_layer.weight[i][j] * src_layer.output[i]
 
                 dst_layer.input[j] = sum_in
-                dst_layer.output[j + use_bias] = squash(sum_in)
+                dst_layer.output[j + use_bias] = self.squash(sum_in)
 
     def get_output(self):
         output_layer = self.layers[-1]
@@ -99,7 +110,7 @@ class ANN:
         for i in range(0, output_layer.n_neurons):
             neuron_output = output_layer.output[i + use_bias]
             neuron_error = target_vector[i] - neuron_output
-            output_layer.error[i] = deriv_squash(output_layer.input[i]) * neuron_error
+            output_layer.error[i] = self.deriv_squash(output_layer.input[i]) * neuron_error
             sample_error += neuron_error * neuron_error
         sample_error *= 0.5
         return sample_error
@@ -119,7 +130,7 @@ class ANN:
                 for j in range(0, src_layer.n_neurons):
                     error += src_layer.weight[i + use_bias][j] * src_layer.error[j]
 
-                dst_layer.error[i] = deriv_squash(dst_layer.input[i]) * error
+                dst_layer.error[i] = self.deriv_squash(dst_layer.input[i]) * error
 
 
 class Layer:

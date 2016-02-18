@@ -2,13 +2,13 @@ import math
 import random
 
 
-def sigmoid(x):
+def logistic(x):
     return 1.0 / (1 + math.exp(-x))
 
 
-def deriv_sigmoid(x):
-    sgmd = sigmoid(x)
-    return (1 - sgmd) * sgmd
+def deriv_logistic(x):
+    lgst = logistic(x)
+    return (1 - lgst) * lgst
 
 
 def hyperbolic_tangent(x):
