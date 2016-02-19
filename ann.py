@@ -1,3 +1,4 @@
+import math
 from ann_util import between, make_matrix
 from ann_util import deriv_logistic, logistic
 from ann_util import deriv_hyperbolic_tangent, hyperbolic_tangent
@@ -151,7 +152,9 @@ class Layer:
         self.weight = make_matrix(prev_layer_size + use_bias, self.n_neurons)
         for i in range(len(self.weight)):
             for j in range(len(self.weight[i])):
-                self.weight[i][j] = between(-1.0, 1.0)
+                # adjust initial weights proportional to prev layer size
+                good_range = 1.0 / math.sqrt(prev_layer_size + 1)
+                self.weight[i][j] = between(-good_range, good_range)
 
 if __name__ == '__main__':
 
