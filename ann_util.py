@@ -37,7 +37,8 @@ def make_matrix(N, M):
 
 def serialize(nn, fname):
     with open(fname, 'wb') as f:
-        pickle.dump(nn, f)
+        # use protocol 2, default 0 has problems
+        pickle.dump(nn, f, 2)
 
 
 def deserialize(fname):
