@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# MNIST text dataset
+mnist_train_data.txt
+mnist_train_label.txt
+mnist_test_data.txt
+mnist_test_label.txt
