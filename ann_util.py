@@ -1,4 +1,5 @@
 import math
+import pickle
 import random
 
 
@@ -32,3 +33,14 @@ def make_matrix(N, M):
     Make an N rows by M columns matrix.
     """
     return [[0 for i in range(M)] for i in range(N)]
+
+
+def serialize(nn, fname):
+    with open(fname, 'wb') as f:
+        pickle.dump(nn, f)
+
+
+def deserialize(fname):
+    with open(fname, 'rb') as f:
+        nn = pickle.load(f)
+        return nn
